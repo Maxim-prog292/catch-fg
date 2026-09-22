@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#005542" />
+    <title>Ловим монетки — финансовый маршрут</title>
+    <link rel="stylesheet" href="styles.css?v=20260913-1831" />
+    <link rel="stylesheet" href="exhibit-ui.css?v=20260913-1831" />
+    <link rel="stylesheet" href="museum-v2.css?v=20260913-1831" />
+  </head>
+  <body>
+    <main class="app" id="app" aria-label="Интерактив Ловим монетки">
+      <section class="start-panel" id="startPanel" aria-live="polite">
+        <div class="start-card">
+          <p class="eyebrow">Финансовая грамотность</p>
+          <h1>Ловим монетки</h1>
+          <p class="start-lead">
+            Заработай деньги, собери корзину на неделю, оплати важное и распредели
+            остаток между сбережениями и вложениями.
+          </p>
+          <div class="route-preview" aria-label="Этапы игры">
+            <div><span>01</span><strong>Заработай</strong></div>
+            <div><span>02</span><strong>Спланируй</strong></div>
+            <div><span>03</span><strong>Оплати</strong></div>
+            <div><span>04</span><strong>Сохрани</strong></div>
+          </div>
+          <button class="start-button" id="startButton" type="button">Начать</button>
+        </div>
+      </section>
+
+      <section class="game-shell" id="gameShell" hidden>
+        <header class="game-header">
+          <div class="header-copy">
+            <p class="eyebrow" id="stageEyebrow">Этап 1 из 4</p>
+            <h1 id="stageTitle">Заработай: лови монеты</h1>
+          </div>
+
+          <div class="stage-progress" id="stageProgress" aria-label="Прогресс игры">
+            <span class="is-active">1</span>
+            <i></i>
+            <span>2</span>
+            <i></i>
+            <span>3</span>
+            <i></i>
+            <span>4</span>
+          </div>
+
+          <div class="balance-pill" aria-live="polite">
+            <span id="balanceCaption">Заработано</span>
+            <strong id="balanceValue">0 ₽</strong>
+          </div>
+        </header>
+
+        <section class="stages" id="stages">
+          <section class="stage earn-stage is-active" id="earnStage" aria-label="Ловля монет">
+            <aside class="instruction-card">
+              <span class="stage-seal">01</span>
+              <h2>Лови монеты</h2>
+              <p>
+                Нажимай на монеты, пока не закончилось время. Чем выше номинал — тем
+                больше твой доход.
+              </p>
+              <div class="instruction-tip">
+                <strong>Редкая находка</strong>
+                Бонусная монета прибавит 20% к уже заработанной сумме.
+              </div>
+              <div class="earned-breakdown">
+                <span>Поймано</span>
+                <strong id="caughtCount">0 монет</strong>
+              </div>
+            </aside>
+
+            <section class="coin-field" id="coinField" aria-label="Игровое поле с монетами">
+              <div class="field-heading">
+                <p>Нажимай точно по монете</p>
+                <div class="coin-legend" aria-hidden="true">
+                  <span>10 ₽</span><span>50 ₽</span><span>100 ₽</span>
+                </div>
+              </div>
+              <div class="coin-layer" id="coinLayer"></div>
+              <div class="crosshair" id="crosshair" hidden aria-hidden="true"></div>
+              <div class="field-floor" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </section>
+          </section>
+
+          <section class="stage shopping-stage" id="shoppingStage" aria-label="Покупки на неделю" hidden>
+            <section class="products-panel panel-card">
+              <div class="panel-heading">
+                <div>
+                  <p class="panel-kicker">Продукты на неделю</p>
+                  <h2>Выбери необходимое</h2>
+                </div>
+                <span class="scroll-hint">Листай ↓</span>
+              </div>
+              <div class="product-list scroll-area" id="productList" tabindex="0"></div>
+            </section>
+
+            <aside class="basket-panel panel-card">
+              <div class="basket-topline">
+                <div>
+                  <p class="panel-kicker">Твой лимит</p>
+                  <strong id="shoppingBudgetLabel">0 ₽</strong>
+                </div>
+                <div class="basket-icon" aria-hidden="true"><span></span></div>
+              </div>
+              <div class="budget-track"><span id="budgetFill"></span></div>
+              <div class="basket-summary">
+                <span>В корзине</span>
+                <strong id="basketTotal">0 ₽</strong>
+              </div>
+              <div class="basket-message" id="basketMessage" aria-live="polite">
+                Добавь продукты, которые действительно нужны на неделю.
+              </div>
+              <div class="basket-list scroll-area" id="basketList"></div>
+            </aside>
+          </section>
+
+          <section class="stage payments-stage" id="paymentsStage" aria-label="Обязательные платежи" hidden>
+            <div class="payments-intro">
+              <div>
+                <p class="panel-kicker">Сначала обязательное</p>
+                <h2>Реши, что оплатить сейчас</h2>
+              </div>
+              <p>
+                ЖКХ и связь списываются автоматически, если денег хватает. Остальные
+                платежи можно оплатить или отложить.
+              </p>
+            </div>
+            <div class="payments-grid" id="paymentsGrid"></div>
+          </section>
+
+          <section class="stage allocation-stage" id="allocationStage" aria-label="Сбережения и вложения" hidden>
+            <div class="allocation-summary panel-card">
+              <div>
+                <p class="panel-kicker">Свободные деньги</p>
+                <strong id="allocationBalance">0 ₽</strong>
+              </div>
+              <p>
+                Распредели весь остаток. В сумме должно получиться ровно
+                <strong>100%</strong>.
+              </p>
+              <div class="percent-total"><span>Всего</span><strong id="percentTotal">100%</strong></div>
+            </div>
+
+            <div class="allocation-cards" id="allocationCards">
+              <article class="allocation-card" data-allocation="safety">
+                <div class="allocation-icon safety-icon" aria-hidden="true">
+                  <img src="assets/icons/safety-reserve.png" alt="" draggable="false" />
+                </div>
+                <p class="panel-kicker">Без риска</p>
+                <h2>Подушка безопасности</h2>
+                <p>Деньги доступны в любой момент, доходность — 0%.</p>
+                <label>
+                  <span>Доля</span><strong id="safetyValue">40%</strong>
+                  <input id="safetyRange" type="range" min="0" max="100" value="40" />
+                </label>
+                <output id="safetyAmount">0 ₽</output>
+              </article>
+
+              <article class="allocation-card" data-allocation="deposit">
+                <div class="allocation-icon deposit-icon" aria-hidden="true">
+                  <img src="assets/icons/deposit-growth.png" alt="" draggable="false" />
+                </div>
+                <p class="panel-kicker">Стабильный рост</p>
+                <h2>Вклад</h2>
+                <p>Банк начислит фиксированные 5% к размещённой сумме.</p>
+                <label>
+                  <span>Доля</span><strong id="depositValue">35%</strong>
+                  <input id="depositRange" type="range" min="0" max="100" value="35" />
+                </label>
+                <output id="depositAmount">0 ₽</output>
+              </article>
+
+              <article class="allocation-card" data-allocation="investment">
+                <div class="allocation-icon investment-icon" aria-hidden="true">
+                  <img src="assets/icons/investment-risk.png" alt="" draggable="false" />
+                </div>
+                <p class="panel-kicker">Есть риск</p>
+                <h2>Инвестиции</h2>
+                <p>Результат может составить +10%, 0% или −10%.</p>
+                <label>
+                  <span>Доля</span><strong id="investmentValue">25%</strong>
+                  <input id="investmentRange" type="range" min="0" max="100" value="25" />
+                </label>
+                <output id="investmentAmount">0 ₽</output>
+              </article>
+            </div>
+          </section>
+
+          <section class="stage result-stage" id="resultStage" aria-label="Финансовый итог" hidden>
+            <section class="result-card panel-card">
+              <div class="result-chart-wrap">
+                <p class="panel-kicker">Распределение остатка</p>
+                <div class="result-chart" id="resultChart"></div>
+                <div class="chart-legend" id="chartLegend"></div>
+              </div>
+
+              <div class="result-copy">
+                <p class="panel-kicker">Твой финансовый итог</p>
+                <h2 id="resultTitle">Маршрут завершён</h2>
+                <div class="result-balance">
+                  <span>Сбережения после результата</span>
+                  <strong id="resultBalance">0 ₽</strong>
+                </div>
+                <div class="result-stats" id="resultStats"></div>
+                <div class="result-advice" id="resultAdvice"></div>
+              </div>
+            </section>
+          </section>
+        </section>
+
+        <footer class="bottom-bar" aria-label="Навигация и подсказки">
+          <button class="nav-button secondary" id="backButton" type="button">Назад</button>
+          <div class="footer-status" aria-live="polite">
+            <span id="footerHint">Лови монеты, пока идёт время</span>
+            <strong id="footerTimer">00:30</strong>
+          </div>
+          <button class="nav-button primary" id="nextButton" type="button" disabled>Дальше</button>
+        </footer>
+      </section>
+
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+        <span id="toastMark">!</span>
+        <p id="toastText"></p>
+      </div>
+
+      <aside class="dev-panel" id="devPanel" hidden>
+        <div class="dev-heading">
+          <strong>Режим разработчика</strong>
+          <button id="devClose" type="button" aria-label="Закрыть">×</button>
+        </div>
+        <label>Сумма, ₽ <input id="devIncome" type="number" min="0" step="100" value="1400" /></label>
+        <button id="devApplyIncome" type="button">Применить сумму</button>
+        <button id="devTimerToggle" type="button">Выключить таймер</button>
+        <button id="devSpawn" type="button">Добавить монету</button>
+        <button id="devNext" type="button">Пропустить этап</button>
+      </aside>
+    </main>
+
+    <script src="exhibit-ui.js?v=20260913-1831"></script>
+    <script src="script.js?v=20260913-1831"></script>
+  </body>
+</html>
